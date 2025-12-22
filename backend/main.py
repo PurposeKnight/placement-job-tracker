@@ -13,3 +13,7 @@ def home():
 def add_application(app_data: JobApplication):
     applications.append(app_data)
     return {"message": "Application added"}
+
+@app.get("/applications")
+def get_applications():
+    return applications
