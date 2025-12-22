@@ -32,3 +32,16 @@ def add_application(app: JobApplication):
     conn.close()
 
     return {"message": "Application added successfully"}
+
+
+@app.get("/applications")
+def get_applications():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM applications")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
