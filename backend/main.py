@@ -45,3 +45,27 @@ def get_applications():
     conn.close()
 
     return [dict(row) for row in rows]
+
+@app.put("/applications/{app_id}")
+def update_application(app_id: int, app: JobApplication):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE applications
+        SET company = ?, role = ?, location = ?, status = ?, applied_date = ?, notes = ?
+        WHERE id = ?
+    """, (
+        app.company,
+        app.role,
+        app.location,
+        app.status,
+        app.applied_date,
+        app.notes,
+        app_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return {"message": "Application updated successfully"}
