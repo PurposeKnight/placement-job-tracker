@@ -1,5 +1,5 @@
 // ================== CONFIG ==================
-const API_URL = "http://127.0.0.1:8000/applications";
+const API_URL = "https://placement-job-tracker-3.onrender.com/docs";
 
 // ================== DOM ELEMENTS ==================
 const tableBody = document.getElementById("applicationsTable");
