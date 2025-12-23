@@ -69,3 +69,14 @@ def update_application(app_id: int, app: JobApplication):
     conn.close()
 
     return {"message": "Application updated successfully"}
+
+@app.delete("/applications/{app_id}")
+def delete_application(app_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM applications WHERE id = ?", (app_id,))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Application deleted successfully"}
