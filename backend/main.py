@@ -1,8 +1,20 @@
 from fastapi import FastAPI
-from models import JobApplication
-from database import get_connection, create_table
+from fastapi.middleware.cors import CORSMiddleware
+
+from backend.models import JobApplication
+from backend.database import get_connection, create_table
+
+
 
 app = FastAPI(title="Placement Job Tracker API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 create_table()
 
