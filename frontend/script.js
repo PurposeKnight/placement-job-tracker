@@ -1,11 +1,10 @@
+// ================== CONFIG ==================
 const API_URL = "http://127.0.0.1:8000/applications";
-let editingId = null;
 
-
+// ================== DOM ELEMENTS ==================
 const tableBody = document.getElementById("applicationsTable");
 const form = document.getElementById("jobForm");
 
-// INPUT ELEMENTS
 const companyInput = document.getElementById("company");
 const roleInput = document.getElementById("role");
 const locationInput = document.getElementById("location");
@@ -13,31 +12,95 @@ const statusInput = document.getElementById("status");
 const dateInput = document.getElementById("applied_date");
 const notesInput = document.getElementById("notes");
 
+const filterStatus = document.getElementById("filterStatus");
+const searchInput = document.getElementById("searchInput");
+
+// ================== STATE ==================
+let allApplications = [];
+let editingId = null;
+
+// ================== FETCH DATA ==================
 async function fetchApplications() {
     const res = await fetch(API_URL);
     const data = await res.json();
 
+    allApplications = data;
+    renderTable(data);
+}
+
+// ================== RENDER TABLE ==================
+function renderTable(data) {
     tableBody.innerHTML = "";
 
     data.forEach(app => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-    <td>${app.id}</td>
-    <td>${app.company}</td>
-    <td>${app.role}</td>
-    <td>${app.status}</td>
-    <td>
-        <button onclick="editApplication(${app.id})">Edit</button>
-        <button onclick="deleteApplication(${app.id})">Delete</button>
-    </td>
-`;
+            <td>${app.id}</td>
+            <td>${app.company}</td>
+            <td>${app.role}</td>
+            <td>
+    <span class="status ${app.status.toLowerCase()}">
+        ${app.status}
+    </span>
+</td>
 
+            <td>
+                <button onclick="editApplication(${app.id})">Edit</button>
+                <button onclick="deleteApplication(${app.id})">Delete</button>
+            </td>
+        `;
 
         tableBody.appendChild(row);
     });
 }
 
+// ================== FILTER + SEARCH ==================
+function applyFilters() {
+    let filtered = allApplications;
+
+    const status = filterStatus.value;
+    const search = searchInput.value.toLowerCase();
+
+    if (status !== "All") {
+        filtered = filtered.filter(app => app.status === status);
+    }
+
+    if (search) {
+        filtered = filtered.filter(app =>
+            app.company.toLowerCase().includes(search) ||
+            app.role.toLowerCase().includes(search)
+        );
+    }
+
+    renderTable(filtered);
+}
+
+// ================== EDIT ==================
+function editApplication(id) {
+    const app = allApplications.find(a => a.id === id);
+
+    companyInput.value = app.company;
+    roleInput.value = app.role;
+    locationInput.value = app.location || "";
+    statusInput.value = app.status;
+    dateInput.value = app.applied_date;
+    notesInput.value = app.notes || "";
+
+    editingId = id;
+    form.querySelector("button").innerText = "Update Application";
+}
+
+// ================== DELETE ==================
+async function deleteApplication(id) {
+    await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
+
+    fetchApplications();
+}
+
+// ================== ADD / UPDATE ==================
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -56,6 +119,7 @@ form.addEventListener("submit", async (e) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(application)
         });
+
         editingId = null;
         form.querySelector("button").innerText = "Add Application";
     } else {
@@ -70,26 +134,9 @@ form.addEventListener("submit", async (e) => {
     fetchApplications();
 });
 
+// ================== EVENTS ==================
+filterStatus.addEventListener("change", applyFilters);
+searchInput.addEventListener("input", applyFilters);
 
-async function deleteApplication(id) {
-    await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
-    });
-
-    fetchApplications();
-}
-function editApplication(id) {
-    const row = [...tableBody.children].find(
-        tr => tr.children[0].innerText == id
-    );
-
-    companyInput.value = row.children[1].innerText;
-    roleInput.value = row.children[2].innerText;
-    statusInput.value = row.children[3].innerText;
-
-    editingId = id;
-    form.querySelector("button").innerText = "Update Application";
-}
-
-
+// ================== INITIAL LOAD ==================
 fetchApplications();
