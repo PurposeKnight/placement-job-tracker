@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Placement / Job Application Tracker</h1>
+
+        <!-- FORM -->
+        <form id="jobForm" class="form">
+            <input type="text" id="company" placeholder="Company" required />
+            <input type="text" id="role" placeholder="Role" required />
+            <input type="text" id="location" placeholder="Location" />
+
+            <select id="status" required>
+                <option value="">Select Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
+            <input type="date" id="applied_date" required />
+            <input type="text" id="notes" placeholder="Notes" />
+
+            <button type="submit">Add Application</button>
+        </form>
+
+        <!-- FILTER & SEARCH -->
+        <h2>Applications</h2>
+
+        <div class="controls">
+            <select id="filterStatus">
+                <option value="All">All Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
+            <input type="text" id="searchInput" placeholder="Search by company or role" />
+        </div>
+
+        <!-- RESPONSIVE TABLE -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Company</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
