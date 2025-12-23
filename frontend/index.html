@@ -6,31 +6,43 @@
 </head>
 <body>
 
-    <h1>Placement / Job Application Tracker</h1>
+    <div class="container">
+        <h1>Placement / Job Application Tracker</h1>
 
-    <form id="jobForm">
-        <input type="text" id="company" placeholder="Company" required />
-        <input type="text" id="role" placeholder="Role" required />
-        <input type="text" id="location" placeholder="Location" />
-        <input type="text" id="status" placeholder="Status" required />
-        <input type="date" id="applied_date" required />
-        <input type="text" id="notes" placeholder="Notes" />
-        <button type="submit">Add Application</button>
-    </form>
+        <form id="jobForm" class="form">
+            <input type="text" id="company" placeholder="Company" required />
+            <input type="text" id="role" placeholder="Role" required />
+            <input type="text" id="location" placeholder="Location" />
 
-    <h2>Applications</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Company</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="applicationsTable"></tbody>
-    </table>
+            <select id="status" required>
+                <option value="">Select Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
+            <input type="date" id="applied_date" required />
+            <input type="text" id="notes" placeholder="Notes" />
+
+            <button type="submit">Add Application</button>
+        </form>
+
+        <h2>Applications</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="applicationsTable"></tbody>
+        </table>
+    </div>
 
     <script src="script.js"></script>
 </body>
