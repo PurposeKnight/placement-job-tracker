@@ -1,4 +1,6 @@
 const API_URL = "http://127.0.0.1:8000/applications";
+let editingId = null;
+
 
 const tableBody = document.getElementById("applicationsTable");
 const form = document.getElementById("jobForm");
@@ -21,14 +23,16 @@ async function fetchApplications() {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${app.id}</td>
-            <td>${app.company}</td>
-            <td>${app.role}</td>
-            <td>${app.status}</td>
-            <td>
-                <button onclick="deleteApplication(${app.id})">Delete</button>
-            </td>
-        `;
+    <td>${app.id}</td>
+    <td>${app.company}</td>
+    <td>${app.role}</td>
+    <td>${app.status}</td>
+    <td>
+        <button onclick="editApplication(${app.id})">Edit</button>
+        <button onclick="deleteApplication(${app.id})">Delete</button>
+    </td>
+`;
+
 
         tableBody.appendChild(row);
     });
@@ -46,18 +50,26 @@ form.addEventListener("submit", async (e) => {
         notes: notesInput.value
     };
 
-    await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(application)
-    });
-    alert("Application added successfully!");
+    if (editingId) {
+        await fetch(`${API_URL}/${editingId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(application)
+        });
+        editingId = null;
+        form.querySelector("button").innerText = "Add Application";
+    } else {
+        await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(application)
+        });
+    }
 
     form.reset();
     fetchApplications();
 });
+
 
 async function deleteApplication(id) {
     await fetch(`${API_URL}/${id}`, {
@@ -66,5 +78,18 @@ async function deleteApplication(id) {
 
     fetchApplications();
 }
+function editApplication(id) {
+    const row = [...tableBody.children].find(
+        tr => tr.children[0].innerText == id
+    );
+
+    companyInput.value = row.children[1].innerText;
+    roleInput.value = row.children[2].innerText;
+    statusInput.value = row.children[3].innerText;
+
+    editingId = id;
+    form.querySelector("button").innerText = "Update Application";
+}
+
 
 fetchApplications();
